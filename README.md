@@ -9,6 +9,11 @@
 3. report generated(also available as a file in repo)
 https://drive.google.com/file/d/1VmEZFP_2ACnwpqjSb5NfwtxQS0R5jqR7/view?usp=sharing 
 
+Overlapping intervals logic explanation: 
+lets say our the range in which we are calculating uptime downtime is form 10am to 12pm, now an overlapping interval will be something from 9am to 1pm,
+now i have defined query, as such start_time_range<=end_time_interval.time() && end_time_range>=start_time_interval.time() then we consider that range, 
+so in our case, 10am(range start time) is smaller then 12pm(interval end time) and 12pm( range end-time) greater then 9am interval start-time 
+
 Code explanation: 
 1. Tables used?
     1. store (to store data from store csv file)
@@ -20,12 +25,13 @@ Code explanation:
     1. we will fetch the last recorded time from our polling data and mark this as end time, in  production this should be current time
     2. we will calculate the start time, based on end time, that is 1hours,1 day, 1 week before
     3. we will fetch all the stores that are registered in our database
-    4. we will fetch if the store was working in the current window of start and end time. that is hours/day/week
-    5. we will convert the local business hours to UTC format, to compare with the polling data is working 
-    6. we will fetch the polls with store_id in the current window
-    7. after that we will iterate over the polling data,to fetch the number if minutes our restaurant was active/inactive
-    8. at last we will store all calculated data in an array.
-    9. from the array we can create a csv file to store our data.
+    4. we will create time windows, for hour,week,day based on above fetched end_time and start_time 
+    5. inside each window, we fetch the business hours and polling data 
+    6. we will convert the local business hours to UTC format, to compare with the polling data
+    7. we will fetch the polls with store_id in the current window
+    8. after that we will iterate over the polling data,to fetch the number of minutes our restaurant was active/inactive
+    9. at last we will store all calculated data in an array.
+    10. from the array we can create a csv file to store our data.
   
 3. Logic to load the huge data available in our csv.
      1. we will create objects of your models(Store,businessHours,JobStore)
