@@ -5,7 +5,6 @@ def calculate_uptime_downtime(start: datetime, end: datetime, polls: list):
     Calculate uptime and downtime between start and end times using poll data.
     Returns uptime and downtime in minutes.
     """
-    print(start)
     uptime = downtime = 0
     last_status = "inactive"  # assuming offline until the first poll
     last_time = start

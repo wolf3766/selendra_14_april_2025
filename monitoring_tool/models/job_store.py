@@ -6,6 +6,7 @@ class JobStore(models.Model):
     STATUS_CHOICES = [
         ("running", "Running"),
         ("completed", "Completed"),
+        ("failed", "Failed")
     ]
 
     job_id = models.CharField(primary_key=True, max_length=255)

@@ -23,10 +23,11 @@ class TriggerReportView(APIView):
                             }, status=status.HTTP_200_OK)
     
     def get(self, request, pk):
-        job = JobStore.objects.filter(job_id=pk).first()
-        if job in None:
-            return Response(data={"message":"report with passed id do not exist"}, status=status.HTTP_404_NOT_FOUND)
-        
+        try:
+            job = JobStore.objects.get(job_id=pk)
+        except JobStore.DoesNotExist:
+            return Response(data={"message": "Report with the provided ID does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
         if job.status == "running":
             return Response(status=status.HTTP_302_FOUND, data={"job_id": pk,"message":"this job is still prcoessing"})
         
