@@ -9,10 +9,21 @@
 3. report generated(also available as a file in repo)
 https://drive.google.com/file/d/1VmEZFP_2ACnwpqjSb5NfwtxQS0R5jqR7/view?usp=sharing 
 
+How to Run the application?
+    1. python manage.py makemigrations // used to create migrations 
+    2. python manage.py migrate // to run the migrations 
+    3. python manage.py runserver // to run the server 
+    4. celery -A loop_assignment worker --loglevel=info // in a different terminal, used to run a worker process, which will work in async manner 
+
 Overlapping intervals logic explanation: 
 lets say our the range in which we are calculating uptime downtime is form 10am to 12pm, now an overlapping interval will be something from 9am to 1pm,
 now i have defined query, as such start_time_range<=end_time_interval.time() && end_time_range>=start_time_interval.time() then we consider that range, 
 so in our case, 10am(range start time) is smaller then 12pm(interval end time) and 12pm( range end-time) greater then 9am interval start-time 
+
+how generating report is being handled?
+1. generating report is being handled in async manner, cause generating report is taking around 25-30 seconds
+2. we have a used a background job scheduler, **celery** with a worker to execute these tasks as soon as they arrive.
+3. a shared task is being used to generate and save csv files in our local system. 
 
 Code explanation: 
 1. Tables used?
@@ -43,3 +54,10 @@ Code explanation:
     2. if a store do not exist but its poll-data/business-hours exist in that case i have simply discarded those values as store value is important.
     3. this is being used to streamline the data.
     4. another way could have been, if i found business-hours without store, then creating a new store with that id, but that approach is not feasible, as this might lead to redudent entries.
+
+5. what can be improved?
+   1. instead of running based on csv file last date, we should use current date-time, to get latest report
+   2. can move the csv file to cloud such as s3, for backup and fault tolerance
+   3. can use queue model with celery such that each worker only listens for tasks in a particular queue.
+   4. can manage the theards that are being used by a worker. for fast processing and concurrency of tasks
+   5. can add cron job/database trigger to automatically load csv files to database.
