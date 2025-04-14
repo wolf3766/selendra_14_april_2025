@@ -22,9 +22,9 @@ now i have defined query, as such start_time_range<=end_time_interval.time() && 
 so in our case, 10am(range start time) is smaller then 12pm(interval end time) and 12pm( range end-time) greater then 9am interval start-time 
 
 7. how generating report is being handled?
-1. generating report is being handled in async manner, cause generating report is taking around 25-30 seconds
-2. we have a used a background job scheduler, **celery** with a worker to execute these tasks as soon as they arrive.
-3. a shared task is being used to generate and save csv files in our local system. 
+    1. generating report is being handled in async manner, cause generating report is taking around 25-30 seconds
+    2. we have a used a background job scheduler, **celery** with a worker to execute these tasks as soon as they arrive.
+    3. a shared task is being used to generate and save csv files in our local system. 
 
 Code explanation: 
 1. Tables used?
